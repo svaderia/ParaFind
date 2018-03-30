@@ -1,8 +1,12 @@
 import numpy as np
-a = np.random.rand(128,128)
+import sys
+
+dim = int(sys.argv[1])
+order = int(sys.argv[2])
+a = np.random.rand(dim, dim)
 a.sort(axis=0)
 a.sort(axis=1)
-a = np.ceil(10000*a)
+a = np.ceil((10**order)*a)
 a = a.astype(int)
-np.savetxt('Matrix.csv', a ,fmt = '%7.7d', delimiter=',')
+np.savetxt('test.csv', a ,fmt = '%{}.{}d'.format(order, order), delimiter=',')
 
