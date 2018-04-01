@@ -1,41 +1,66 @@
-
 #include <stdio.h>
+#include <stdlib.h>
+#include <omp.h>
 
-int mat[4][4] = { {10, 20, 30, 40},
-                  {15, 25, 35, 45},
-                  {27, 29, 37, 48},
-                  {32, 33, 39, 50},
-                };
+int main(int argc, char* argv[]){
 
-int getVal(int i, int j){
-    return mat[i][j];
-}
+    int n;
+    int threads;
+    char *filename = NULL;
+    if(argc >= 1)
+    {
+        filename = argv[1];
+    }
+    else
+    {
+        printf( "Error: No file provided!\n");
+        exit(0);
+    }
+    if(filename == NULL)
+    {
+        printf( "Error: No file provided!\n");
+        exit(0);
+    }
+    printf("Matrix file name : %s\n" , filename);
+    if(argc >= 2)
+    {
+       threads  = atoi(argv[2]);
+    }
+    if(threads == 0)
+    {       
+        printf( "Num of threads not given. Working on 4 threads.\n");
+    }
+    printf("Num of Threads : %d\n" ,threads );
+    if(argc >= 3)
+    {
+       n  = atoi(argv[3]);
+    }
+    if(threads == 0)
+    {   printf( "Matrix size not given assuming 10^3 by 10^3\n");
+        n = 1000;
+    }
+    printf("Size of Matrix : %d by %d\n" ,n,n );
 
-int search(int n, int x)
-{
-   int i = 0, j = n-1;  //set indexes for top right element
-   while ( i < n && j >= 0 )
-   {  int val = getVal(i,j);
-      printf("Element: %d , index: %d,%d \n",val, i,j);
-      if ( val == x )
-      {
-         printf("n Found at %d, %d", i, j);
-         return 1;
-      }
-      if ( val > x )
-        j--;
-      else //  if val < x
-        i++;
-   }
+    
 
-   printf("n Element not found");
-   return 0;  // if ( i==n || j== -1 )
-}
+    omp_set_num_threads(threads);
+    int** mat;
+    char queryString[12];
+    int query;
+    double wtime;
+    //mat  = read_matrix(filename)
+    while(scanf("%s", queryString))
+    {   query = atoi(queryString);
+        if (query == -1)
+            break;
+        wtime = omp_get_wtime();
 
-// driver program to test above function
-int main()
-{
+        printf("query :%4d  ",query);
+        printf("time taken %14f \n",(omp_get_wtime() - wtime));
+    }
+    
+    
 
-  search(4, 29);
-  return 0;
+
+
 }
