@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
+#include "myRead.h"
 
 struct position {
     int row;
@@ -47,50 +48,23 @@ position* splitWalk(int** mat, int query, int pt1, int pt2){
 
 int main(int argc, char* argv[]){
 
-    int n;
-    int threads;
+    int num_threads;
     char *filename = NULL;
-    if(argc >= 1)
-    {
-        filename = argv[1];
-    }
-    else
-    {
-        printf( "Error: No file provided!\n");
-        exit(0);
-    }
-    if(filename == NULL)
-    {
-        printf( "Error: No file provided!\n");
-        exit(0);
-    }
-    printf("Matrix file name : %s\n" , filename);
-    if(argc >= 2)
-    {
-       threads  = atoi(argv[2]);
-    }
-    if(threads == 0)
-    {       
-        printf( "Num of threads not given. Working on 4 threads.\n");
-    }
-    printf("Num of Threads : %d\n" ,threads );
-    if(argc >= 3)
-    {
-       n  = atoi(argv[3]);
-    }
-    if(threads == 0)
-    {   printf( "Matrix size not given assuming 10^3 by 10^3\n");
-        n = 1000;
-    }
-    printf("Size of Matrix : %d by %d\n" ,n,n );
 
-    
+    if(argc > 1) num_threads  = atoi(argv[1]);
+    else num_threads = 4;
 
-    omp_set_num_threads(threads);
+    if(argc > 2) filename = argv[2];
+    else filename = "./test/test.csv";
+
+    // omp_set_num_threads(num_threads);
+
     int** mat;
+    int dim;
     char queryString[12];
     int query;
     double wtime;
+<<<<<<< HEAD
     int flag = -1;
     position* point1 = (position*)malloc(sizeof(position));
     position* point2 = (position*)malloc(sizeof(position));
@@ -174,4 +148,20 @@ int main(int argc, char* argv[]){
         
         printf("time taken %14f \n",(omp_get_wtime() - wtime));
     }
+=======
+
+    // reading a the matrix
+    mat = get_matrix(mat, filename, &dim);
+    print_matrix(mat, dim);
+
+    // while(scanf("%s", queryString))
+    // {   query = atoi(queryString);
+    //     if (query == -1)
+    //         break;
+    //     wtime = omp_get_wtime();
+
+    //     printf("query :%4d  ",query);
+    //     printf("time taken %14f \n",(omp_get_wtime() - wtime));
+    // }
+>>>>>>> 02809ac78106877474c7ad2e02b3255b5d57cca4
 }
