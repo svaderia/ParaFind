@@ -10,7 +10,7 @@ a = np.ceil((10**order)*a)
 a = a.astype(int)
 # np.savetxt('test.csv', a ,fmt = '%{}.{}d'.format(order, order), delimiter=',')
 with open("test.csv", 'w') as f:
-    f.write("{} {}\n".format(dim, order))
+    f.write("{}\n".format(dim, order))
     for row in a:
         for ele in row[:-1]:            
             f.write('{} '.format(ele, align=order))
