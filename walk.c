@@ -57,14 +57,28 @@ int main(int argc, char* argv[]){
     if(argc > 2) filename = argv[2];
     else filename = "./test/test.csv";
 
-    // omp_set_num_threads(num_threads);
+    omp_set_num_threads(num_threads);
 
     int** mat;
     int dim;
     char queryString[12];
     int query;
     double wtime;
-<<<<<<< HEAD
+
+    // reading a the matrix
+    mat = get_matrix(mat, filename, &dim);
+    // print_matrix(mat, dim);
+
+    while(scanf("%s", queryString))
+    {   query = atoi(queryString);
+        if (query == -1)
+            break;
+        wtime = omp_get_wtime();
+
+        printf("query :%4d  ",query);
+        printf("time taken %14f \n",(omp_get_wtime() - wtime));
+    }
+
     int flag = -1;
     position* point1 = (position*)malloc(sizeof(position));
     position* point2 = (position*)malloc(sizeof(position));
@@ -148,20 +162,6 @@ int main(int argc, char* argv[]){
         
         printf("time taken %14f \n",(omp_get_wtime() - wtime));
     }
-=======
 
-    // reading a the matrix
-    mat = get_matrix(mat, filename, &dim);
-    print_matrix(mat, dim);
-
-    // while(scanf("%s", queryString))
-    // {   query = atoi(queryString);
-    //     if (query == -1)
-    //         break;
-    //     wtime = omp_get_wtime();
-
-    //     printf("query :%4d  ",query);
-    //     printf("time taken %14f \n",(omp_get_wtime() - wtime));
-    // }
->>>>>>> 02809ac78106877474c7ad2e02b3255b5d57cca4
+    
 }
