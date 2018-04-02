@@ -22,7 +22,7 @@ int special_bs(int* arr, int key, int low, int high){
 }
 
 int search_in_column(int** matrix, int key, int col_num, int low_row, int num_rows){
-	if(matrix[high] > key){
+	if(matrix[low_row + num_rows][col_num] > key){
 		return -1;
 	}
 

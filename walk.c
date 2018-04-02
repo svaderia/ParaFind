@@ -116,15 +116,15 @@ int main(int argc, char* argv[]){
           //  {18,	196,	648,	916,	1509}};
     ///int n = 5;
 
-    while(scanf("%s", queryString))
-    {   query = atoi(queryString);
-        if (query == -1)
-            break;
-        wtime = omp_get_wtime();
+    // while(scanf("%s", queryString))
+    // {   query = atoi(queryString);
+    //     if (query == -1)
+    //         break;
+    //     wtime = omp_get_wtime();
 
-        printf("query :%4d  ",query);
-        printf("time taken %14f \n",(omp_get_wtime() - wtime));
-    }
+    //     printf("query :%4d  ",query);
+    //     printf("time taken %14f \n",(omp_get_wtime() - wtime));
+    // }
 
     int flag = -1;
     position* point1 = (position*)malloc(sizeof(position));
