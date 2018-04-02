@@ -45,7 +45,7 @@ int search_in_column(int** matrix, int key, int col_num, int low_row, int num_ro
 int search_in_row(int** matrix, int key, int row_num, int low_col, int num_cols){
 	int intermediate_result = special_bs(matrix[row_num], key, low_col, low_col + num_cols - 1);
 	if(intermediate_result != -1){
-		return low_col + intermediate_result;
+		return intermediate_result;
 	}else{
 		return -1;
 	}	
