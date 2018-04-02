@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
+#include "binary.h"
 #include "myRead.h"
+
 
 struct position {
     int row;
@@ -10,38 +12,74 @@ struct position {
 typedef struct position position;
 
 
-position* splitWalk(int** mat, int query, int pt1, int pt2){
+position* splitWalk(int** mat, int query, position* pt1, position* pt2){
     
+    position* loc1 = (position*)malloc(sizeof(position));
+    position* loc2 = (position*)malloc(sizeof(position));
+    loc2->row = -1;
+    loc1->row = -1;
+    loc2->coll = -1;
+    loc1->coll = -1;
+    if(query == mat[pt1->row][pt1->coll])
+    {
+        loc1-> row = pt1->row;
+        loc1->coll = pt1->coll;
+        printf("Element found at row: %d, coll:%d",loc1->row,loc1->coll);
+        return loc1;
+
+    }
+    if(query == mat[pt2->row][pt2->coll])
+    {
+        loc1-> row = pt2->row;
+        loc1->coll = pt2->coll;
+        printf("Element found at row: %d, coll:%d",loc1->row,loc1->coll);
+        return loc1;
+    }
     int num_rows = pt1->row < pt2->row ? (pt2->row - pt1->row):(pt1->row - pt2->row);
     if(num_rows > 100)
     {
         position* mid = (position*)malloc(sizeof(position));
-        mid->row = (pt1-row + pt2->row)/2;
+        mid->row = (pt1->row + pt2->row)/2;
         int low_coll = pt1->coll < pt2->coll ? pt1->coll : pt2->coll;
-        int num_colls = pt1->coll < pt2->coll ? (pt2->coll - pt1->coll):(pt1->coll - pt2->coll);
-        mid->coll = search_in_row(mat, query,(pt1-row + pt2->row)/2 ,low_coll , num_coll );
-        position* loc1 = (position*)malloc(sizeof(position));
-        position* loc2 = (position*)malloc(sizeof(position));
-        loc2->row = -1;
-        loc1->row = -1;
-        loc2->coll = -1;
-        loc1->coll = -1;
-
-
-        #pragma omp task shared(mat,query)  
-         loc1 = splitWalk(mat, query,point1,mid);           //left recursion
+        int num_coll = pt1->coll < pt2->coll ? (pt2->coll - pt1->coll):(pt1->coll - pt2->coll);
+        mid->coll = search_in_row(mat, query,(pt1->row + pt2->row)/2 ,low_coll , num_coll );
         
-        #pragma omp task shared(mat,query)
-         loc2 = splitWalk(mat, query,point2,mid);       //right recursion
+        #pragma omp task shared(mat,query,loc1)  
+         loc1 = splitWalk(mat, query,pt1,mid);           //left recursion
+        
+        #pragma omp task shared(mat,query,loc2)
+         loc2 = splitWalk(mat, query,mid,pt2);       //right recursion
         
         #pragma omp taskwait
         {   
-             //send back the tuple that has non -1 values
-            
+             if(loc1->row == -1)
+                return loc2;
+            else
+                return loc1;            
         }
 
     }
-    //Write walk algo here @jbnerd
+    else
+    {
+        int i = pt1->row, j = pt1-> coll;
+
+        while(i > pt2->row && j < pt2-> coll){
+
+            if(query == mat[i-1][j]){
+                loc1->coll = j;
+                loc1->row = i; 
+                break;
+            }
+            else if(query < mat[i-1][j])
+                j++;
+            else
+                i--;
+
+        }
+        return loc1;
+    }
+
+    
 }
 
 
@@ -67,7 +105,16 @@ int main(int argc, char* argv[]){
 
     // reading a the matrix
     mat = get_matrix(mat, filename, &dim);
+    int n = dim;
     // print_matrix(mat, dim);
+
+    //toy data
+    //int mat[5][5] =  {{ 3,	47,	488,	635,	1088},
+    //        {  9,	78,	504,	860,	1187},
+      //      { 11,	179,	591,	864,	1230},
+        //    { 16,	193,	608,	886,	1261},
+          //  {18,	196,	648,	916,	1509}};
+    ///int n = 5;
 
     while(scanf("%s", queryString))
     {   query = atoi(queryString);
@@ -103,8 +150,8 @@ int main(int argc, char* argv[]){
 
                            #pragma omp parallel
                             {
-                            #pragma omp single shared(position)
-                             val = splitWalk(mat, query,point1,point2);
+                            #pragma omp single
+                             val = splitWalk(mat, query,point2,point1);
                             }
                         
                     }
@@ -117,7 +164,7 @@ int main(int argc, char* argv[]){
                         //pt1 left coll, pt2 right coll
                             #pragma omp parallel
                             {
-                            #pragma omp single shared(position)
+                            #pragma omp single 
                              val = splitWalk(mat, query,point1,point2);
                             }
 
@@ -133,8 +180,8 @@ int main(int argc, char* argv[]){
                         //pt1 top row, pt2 btm col
                         #pragma omp parallel
                             {
-                            #pragma omp single shared(position)
-                             val = splitWalk(mat, query,point1,point2);
+                            #pragma omp single 
+                             val = splitWalk(mat, query,point2,point1);
                             }
 
                     }
@@ -147,7 +194,7 @@ int main(int argc, char* argv[]){
                         //pt1 left coll and pt2 top
                         #pragma omp parallel
                             {
-                            #pragma omp single shared(position)
+                            #pragma omp single
                              val = splitWalk(mat, query,point1,point2);
                             }
                     }
@@ -156,7 +203,7 @@ int main(int argc, char* argv[]){
         
         if(flag == -1){
             printf("query :%4d  ",query);
-            printf("Not found! :(\n")
+            printf("Not found! :(\n");
         }
         else 
         

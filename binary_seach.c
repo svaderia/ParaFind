@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
+#include "binary.h"
 
 int special_bs(int* arr, int key, int low, int high){
 	if(arr[high] > key){
@@ -51,6 +51,7 @@ int search_in_row(int** matrix, int key, int row_num, int low_col, int num_cols)
 	}	
 }
 
+/*
 int main(){
 
 	int* arr = (int*) malloc(10 * sizeof(int));
@@ -61,4 +62,4 @@ int main(){
 	printf("%d\n", arr[result]);
 
 	return 0;
-}
+}*/
