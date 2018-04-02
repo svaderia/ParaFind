@@ -3,7 +3,6 @@
 *.gch
 *exe
 a.out
-<<<<<<< HEAD
 *.csv
 *.txt
 test/*csv

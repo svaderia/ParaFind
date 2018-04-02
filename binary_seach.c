@@ -4,7 +4,7 @@
 #include "binary.h"
 
 int special_bs(int* arr, int key, int low, int high){
-	if(arr[high] > key){
+	if(arr[high] < key){
 		return -1;
 	}
 
@@ -22,11 +22,11 @@ int special_bs(int* arr, int key, int low, int high){
 }
 
 int search_in_column(int** matrix, int key, int col_num, int low_row, int num_rows){
-	if(matrix[low_row + num_rows][col_num] > key){
+	if(matrix[low_row + num_rows - 1][col_num] < key){
 		return -1;
 	}
 
-	int low = low_row, high = low_row + num_rows;
+	int low = low_row, high = low_row + num_rows - 1;
 	int intermediate_result;
 	while(low < high){
 		int mid = low + (high - low)/2;
@@ -43,7 +43,7 @@ int search_in_column(int** matrix, int key, int col_num, int low_row, int num_ro
 }
 
 int search_in_row(int** matrix, int key, int row_num, int low_col, int num_cols){
-	int intermediate_result = special_bs(matrix[row_num], key, low_col, low_col + num_cols);
+	int intermediate_result = special_bs(matrix[row_num], key, low_col, low_col + num_cols - 1);
 	if(intermediate_result != -1){
 		return low_col + intermediate_result;
 	}else{
