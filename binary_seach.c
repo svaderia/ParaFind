@@ -36,10 +36,11 @@ int search_in_column(int** matrix, int key, int col_num, int low_row, int num_ro
 			high = mid;
 		}else{
 			intermediate_result = mid;
+            return mid;
 		}
 	}
 	intermediate_result = low;
-	return intermediate_result + low_row;
+	return intermediate_result;
 }
 
 int search_in_row(int** matrix, int key, int row_num, int low_col, int num_cols){
