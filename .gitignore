@@ -2,8 +2,8 @@
 .vscode*
 *.gch
 *exe
-a.out
 *.csv
 *.txt
 test/*csv
 *.in
+*.out
