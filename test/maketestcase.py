@@ -1,18 +1,28 @@
 import numpy as np
 import sys
+import random
 
 dim = int(sys.argv[1])
-order = int(sys.argv[2])
 a = np.random.rand(dim, dim)
 a.sort(axis=0)
 a.sort(axis=1)
-a = np.ceil((10**order)*a)
+a = np.ceil((10 * dim**2) * a)
 a = a.astype(int)
-# np.savetxt('test.csv', a ,fmt = '%{}.{}d'.format(order, order), delimiter=',')
-with open("test.csv", 'w') as f:
-    f.write("{}\n".format(dim, order))
-    for row in a:
-        for ele in row[:-1]:            
-            f.write('{} '.format(ele, align=order))
-        f.write('{}'.format(row[-1], align=order))
-        f.write("\n")
+total_queries = 10**4
+
+with open("./test/test.csv", 'w') as f:
+    f.write("{}\n".format(dim))
+    f.write("\n".join([" ".join([str(ele) for ele in row]) for row in a]))
+
+
+with open("test/query.in", "w") as f:
+    f.write("{}\n".format(total_queries))    
+    arr = [str(random.randint(1, 10 * dim**2)) for _ in range(total_queries) ]
+    f.write("\n".join(arr))
+
+with open("test/answer.out", "w") as f:
+    for ele in arr:
+        if int(ele) in a:
+            f.write("1\n")
+        else:
+            f.write("0\n")

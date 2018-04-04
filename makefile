@@ -1,4 +1,5 @@
-
+run: exe
+	./exe ${t} > ans.out
 
 compileAll : binary_seach.o myRead.o walk.o
 	gcc -g -fopenmp -o exe binary_seach.o myRead.o walk.o
@@ -14,3 +15,9 @@ walk.o : walk.c myRead.h binary.h
 
 clean :
 	rm *.o exe
+
+testcase: 
+	python test/maketestcase.py ${d}
+
+diff:
+	diff test/answer.out ans.out
