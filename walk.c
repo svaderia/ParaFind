@@ -11,6 +11,42 @@ struct position {
 };
 typedef struct position position;
 
+int** make_matrix(int size){
+    int** matrix = (int**) malloc(size * sizeof(int*));
+    for(int i = 0; i < size; i ++){
+        matrix[i] = (int*) malloc(size * sizeof(int));
+    }
+
+    int i = 0, j = 0, k = 0;
+    int num = 1;
+
+    for(k = 0; k < size; k ++){
+        i = 0;
+        for(j = k; j >= 0; j --){
+            matrix[i][j] = num++;
+            i ++;
+        }
+    }
+
+    for(k = 1; k < size; k ++){
+        j = size - 1;
+        for(i = k; i < size; i++){
+            matrix[i][j] = num++;
+            j --;
+        }
+    }
+
+    return matrix;
+}
+
+void print_matrix(int** matrix, int size){
+    for(int i = 0; i < size; i ++){
+        for(int j = 0; j < size; j ++){
+            printf("%d\t", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
 
 position* splitWalk(int** mat, int query, position* pt1, position* pt2){
     
