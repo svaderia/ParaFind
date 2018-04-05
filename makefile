@@ -17,7 +17,7 @@ clean :
 	rm *.o exe
 
 testcase: 
-	python test/maketestcase.py ${d}
+	python3 test/maketestcase.py ${d}
 
 diff:
 	diff test/answer.out ans.out
