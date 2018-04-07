@@ -56,7 +56,8 @@ int search_in_row(int** matrix, int key, int row_num, int low_col, int num_cols)
 int main(){
 
 	int* arr = (int*) malloc(10 * sizeof(int));
-	for(int i = 0; i < 10; i++){
+	int i;
+	for(i = 0; i < 10; i++){
 		arr[i] = 2 * i;
 	}
 	int result = special_bs(arr, 18294, 0, 19);

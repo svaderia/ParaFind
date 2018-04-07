@@ -52,10 +52,11 @@ int** get_matrix(int** mat, char* path, int* dim){
     int offset = 0;
     bool eof = false;
     memset(b, 0, k);
+    int i, j;
     
-    for(int i = 0; i < *dim; i++){
+    for(i = 0; i < *dim; i++){
         mat[i] = (int*) malloc((*dim) * sizeof(int));
-        for(int j = 0; j < *dim; j++){
+        for(j = 0; j < *dim; j++){
             word_buffer = getWord(fp, b, k, &offset, &eof);
             mat[i][j] = atoi(word_buffer);
             free(word_buffer);
@@ -67,8 +68,9 @@ int** get_matrix(int** mat, char* path, int* dim){
 }
 
 void print_matrix(int** mat, int dim){
-    for(int i = 0; i < dim; i++){
-        for(int j = 0; j < dim; j++){
+    int i, j;
+    for(i = 0; i < dim; i++){
+        for(j = 0; j < dim; j++){
             printf("%d\t", mat[i][j] );
         }
         printf("\n");
@@ -90,8 +92,9 @@ int* read_queries(int* queries, char* path, int* total_queries){
     int offset = 0;
     bool eof = false;
     memset(b, 0, k);
+    int i;
     
-    for(int i = 0; i < *total_queries; i++){
+    for(i = 0; i < *total_queries; i++){
         word_buffer = getWord(fp, b, k, &offset, &eof);
         queries[i] = atoi(word_buffer);
         free(word_buffer);

@@ -4,6 +4,8 @@
 #include "binary.h"
 #include "myRead.h"
 
+int n;
+int num_threads;
 
 struct position {
     int row;
@@ -13,11 +15,12 @@ typedef struct position position;
 
 int** make_matrix(int size){
     int** matrix = (int**) malloc(size * sizeof(int*));
-    for(int i = 0; i < size; i ++){
+    int i;
+    for(i = 0; i < size; i ++){
         matrix[i] = (int*) malloc(size * sizeof(int));
     }
 
-    int i = 0, j = 0, k = 0;
+    int j = 0, k = 0;
     int num = 1;
 
     for(k = 0; k < size; k ++){
@@ -39,14 +42,15 @@ int** make_matrix(int size){
     return matrix;
 }
 
-void print_matrix(int** matrix, int size){
-    for(int i = 0; i < size; i ++){
-        for(int j = 0; j < size; j ++){
-            printf("%d\t", matrix[i][j]);
-        }
-        printf("\n");
-    }
-}
+// void printmatrix(int** matrix, int size){
+//     int i, j;
+//     for(i = 0; i < size; i ++){
+//         for(j = 0; j < size; j ++){
+//             printf("%d\t", matrix[i][j]);
+//         }
+//         printf("\n");
+//     }
+// }
 
 position* splitWalk(int** mat, int query, position* pt1, position* pt2, int depth){
     
@@ -73,7 +77,7 @@ position* splitWalk(int** mat, int query, position* pt1, position* pt2, int dept
         return loc1;
     }
     int num_rows = pt1->row < pt2->row ? (pt2->row - pt1->row):(pt1->row - pt2->row);
-    if(num_rows >= 50)
+    if(num_rows > 10)
     {
         position* mid = (position*)malloc(sizeof(position));
         mid->row = (pt1->row + pt2->row)/2;
@@ -128,29 +132,49 @@ position* splitWalk(int** mat, int query, position* pt1, position* pt2, int dept
 }
 
 int main(int argc, char* argv[]){
-    int num_threads;
+    //int num_threads;
     char *filename = NULL;
 
     if(argc > 1) num_threads  = atoi(argv[1]);
     else num_threads = 4;
     omp_set_num_threads(num_threads);
     
-    if(argc > 2) filename = argv[2];
-    else{
-        filename = (char*) malloc(24 * sizeof(char));
-        memset(filename, '\0', 24);
-        strcpy(filename , "test/test.csv");
-    }
+    // if(argc > 2) filename = argv[2];
+    // else{
+    //     filename = (char*) malloc(24 * sizeof(char));
+    //     memset(filename, '\0', 24);
+    //     strcpy(filename , "test/test.csv");
+    // }
     
+    //int n;
+    if(argc > 2){
+        n = atoi(argv[2]);
+    }else{
+        n = 10000;
+    }
+
     int** mat;
-    int n;
+    // int n = 2 * 10000;
     double wtime;
     
-    mat = get_matrix(mat, filename, &n);
+    // mat = get_matrix(mat, filename, &n);
+    mat = make_matrix(n);
 
     // Reading Queries
     int* queries, total_queries;
-    char* query_path = "test/query.in";
+    char* query_path;
+    if(argc > 3){
+        if(strcmp(argv[3], "3")){
+            query_path = "test/query1.in";
+        }else if(strcmp(argv[3], "4")){
+            query_path = "test/query2.in";
+        }else{
+            query_path = "test/query3.in";
+        }
+    }else{
+        query_path = "test/query3.in";
+    }
+
     queries = read_queries(queries, query_path, &total_queries);
 
     position* point1 = (position*) malloc(sizeof(position));
@@ -159,8 +183,9 @@ int main(int argc, char* argv[]){
 
     double starttime = omp_get_wtime();
 
-    for(int i = 0; i < total_queries; i++){   
-        wtime = omp_get_wtime();
+    int i;
+    for(i = 0; i < total_queries; i++){   
+        // wtime = omp_get_wtime();
         int query = queries[i] ;
 
         if(query >= mat[0][0] && query <= mat[n-1][n-1]){
@@ -174,7 +199,7 @@ int main(int argc, char* argv[]){
 
                     #pragma omp parallel
                     {
-                        #pragma omp single
+                        #pragma omp single nowait
                         val = splitWalk(mat, query,point1,point2,1);
                     }
                     
@@ -187,7 +212,7 @@ int main(int argc, char* argv[]){
                     //pt1 left coll, pt2 right coll
                     #pragma omp parallel
                     {
-                        #pragma omp single 
+                        #pragma omp single nowait 
                         val = splitWalk(mat, query,point1,point2,1);
                     }
 
@@ -203,7 +228,7 @@ int main(int argc, char* argv[]){
                     #pragma omp parallel
                     {   
                         // printf("YOLO");
-                        #pragma omp single 
+                        #pragma omp single nowait 
                         val = splitWalk(mat, query, point1, point2, 1);
                     }
                 }
@@ -215,23 +240,25 @@ int main(int argc, char* argv[]){
                     //pt1 left coll and pt2 top
                     #pragma omp parallel
                     {
-                        #pragma omp single
+                        #pragma omp single nowait
                         val = splitWalk(mat, query,point1,point2,1);
                     }
                 }
             }
         }
         else{
-            printf("0\n" );
+            // printf("0\n" );
             continue;
         }
         
+        // #pragma omp taskwait
+
         if(val->row == -1 && val->coll == -1){
-            printf("0\n" );
+            // printf("0\n" );
         }else{
-            printf("1\n");
+            // printf("1\n");
         }
     }
     double timeTotal = (omp_get_wtime() - starttime);
-    printf("time taken %14.7f \n Avg time %14.5f ",timeTotal , timeTotal/total_queries);
+    printf("time taken %14.7f \n Avg time %14.5f \n",timeTotal , timeTotal/total_queries);
 }
