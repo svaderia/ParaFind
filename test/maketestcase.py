@@ -21,7 +21,7 @@ with open("./test/test.csv", "w") as f:
 
 arr = [str(random.randint(1, 10 * dim**2)) for _ in range(total_queries) ]
 
-with open("test/query.in", "w") as f:
+with open("test/query3.in", "w") as f:
     f.write("{}\n".format(total_queries))    
     f.write("\n".join(arr))
 

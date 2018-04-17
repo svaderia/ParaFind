@@ -141,7 +141,7 @@ position* splitWalk(int** mat, int query, position* pt1, position* pt2, int dept
 }
 
 int main(int argc, char* argv[]){
-    int num_threads;
+    int n, num_threads;
     char *filename = NULL;
 
     if(argc > 1) num_threads  = atoi(argv[1]);
@@ -156,6 +156,13 @@ int main(int argc, char* argv[]){
     //     strcpy(filename , "test/test.csv");
     // }
     
+    //int n;
+    if(argc > 2){
+        n = atoi(argv[2]);
+    }else{
+        n = 10000;
+    }
+
     int** mat;
     int n = atoi(argv[2]);
     double wtime;
@@ -173,11 +180,10 @@ int main(int argc, char* argv[]){
     position* val = (position*) malloc(sizeof(position));
 
     double starttime = omp_get_wtime();
-    
+
     int i;
-    
-    for( i = 0; i < total_queries; i++){   
-        wtime = omp_get_wtime();
+    for(i = 0; i < total_queries; i++){   
+        // wtime = omp_get_wtime();
         int query = queries[i] ;
         found = false;
 
